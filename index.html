@@ -1,0 +1,53 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foundation for Sites</title>
+    <link rel="stylesheet" href="css/app.css">
+  </head>
+  <body>
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <ul class="menu">
+          <li class="menu-text">feedr</li>
+          <li><a href="#">One</a></li>
+          <li><a href="#">Two</a></li>
+          <li><a href="#">Three</a></li>
+        </ul>
+      </div>
+    </div>     
+    <div class="callout large blue">
+      <div class="row column text-center">
+        <h1>New York Times feedr</h1>
+        <h2 class="subheader">Using the Article Search API</h2>
+      </div>
+    </div>
+    <div id="article-feed">
+    </div>
+
+    <script id="article-template" type="text/x-handlebars-template">   
+      <div class="row medium-8 large-6 columns">
+        <div class="blog-post">
+        <h3>{{articleHeadline}}<small>{{articleDate}}</small></h3>
+          <img class="thumbnail" src="https://static01.nyt.com/{{articleImages.url}}">
+        <p>{{articleSnippet}}</p>
+        <div class="callout">
+          <ul class="menu simple">
+            <li>{{articleAuthor}}</li>
+            <li>{{articleCategory}}</li>
+            <li><a href="http://www.nytimes.com/section/{{articleSection}}" target="_blank">Section: {{articleSection}}</a></li>
+            <li><a href="{{articleUrl}}" target="_blank">Read on the NYT</a></li>
+          </ul>
+        </div>
+      </div>
+    </script>
+
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/what-input/what-input.js"></script>
+    <script src="bower_components/foundation-sites/dist/foundation.js"></script>
+    <script src="js/handlebars-v4.0.5.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
