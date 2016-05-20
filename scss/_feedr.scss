@@ -1,3 +1,32 @@
+.menu-text {
+	color: $white;
+	font-size: 22px;
+	padding: 0;
+}
+
+.top-bar .menu a {
+	color: $white;
+	&:hover {
+		color: map-get($foundation-palette, red);
+	}
+}
+
+.app-header {
+	margin-bottom: 2rem;
+}
+
+.parameters li {
+	list-style-type: none;
+}
+
 .blog-post small {
 	padding-left: 10px;
+}
+
+.callout .menu > li > a {
+	display: inline;
+	border-bottom: 1px dotted map-get($foundation-palette, red);
+	&:hover {
+		border-bottom: 1px solid map-get($foundation-palette, red);
+	}
 }

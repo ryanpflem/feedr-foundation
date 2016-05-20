@@ -4,43 +4,66 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foundation for Sites</title>
+    <title>feedr - New York Times</title>
     <link rel="stylesheet" href="css/app.css">
+    <link rel="icon" href="/favicon.ico">
   </head>
   <body>
-    <div class="top-bar">
-      <div class="top-bar-left">
-        <ul class="menu">
-          <li class="menu-text">feedr</li>
-          <li><a href="#">One</a></li>
-          <li><a href="#">Two</a></li>
-          <li><a href="#">Three</a></li>
-        </ul>
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <ul class="menu">
+            <li class="menu-text"><a href="#">feedr</a></li>
+          </ul>
+        </div>
+        <div class="top-bar-right">
+          <ul class="menu">
+            <li><a href="#">Link1</a></li>
+            <li><a href="#">Link2</a></li>
+            <li><a href="#">Link3</a></li>
+          </ul>
+        </div>
       </div>
-    </div>     
-    <div class="callout large blue">
+    <div class="callout large app-header green">
       <div class="row column text-center">
         <h1>New York Times feedr</h1>
         <h2 class="subheader">Using the Article Search API</h2>
       </div>
     </div>
-    <div id="article-feed">
+
+    <div class="row" id="content">
+      <div class="medium-3 columns" data-sticky-container>
+        <div class="sticky" data-sticky data-anchor="content">
+        <h4>API Parameters</h4>
+        <ul class="parameters">
+          <li><label for="">Search</label></li>
+          <li><input type="text"></li>
+          <li><label for="">Filter</label></li>
+          <li><input type="text"></li>
+          <li><label for="">Start Date</label></li>
+          <li><input type="text"></li>
+          <li><label for="">End Date</label></li>
+          <li><input type="text"></li>
+          <li><label for="">Page</label></li>
+          <li><input type="text"></li>
+        </ul>
+        </div>
+      </div>
+      <div id="article-feed" class="medium-8 columns">
+      </div>
     </div>
 
     <script id="article-template" type="text/x-handlebars-template">   
-      <div class="row medium-8 large-6 columns">
-        <div class="blog-post">
+      <div class="blog-post">
         <h3>{{articleHeadline}}<small>{{articleDate}}</small></h3>
-          <img class="thumbnail" src="https://static01.nyt.com/{{articleImages.url}}">
+          <img class="thumbnail" src="{{articleImages.url}}">
         <p>{{articleSnippet}}</p>
-        <div class="callout">
+        <div class="callout grey">
           <ul class="menu simple">
             <li>{{articleAuthor}}</li>
             <li>{{articleCategory}}</li>
-            <li><a href="http://www.nytimes.com/section/{{articleSection}}" target="_blank">Section: {{articleSection}}</a></li>
+            <li>Section: <a href="https://www.nytimes.com/{{articleSectionUrl}}" target="_blank">{{articleSection}}</a></li>
             <li><a href="{{articleUrl}}" target="_blank">Read on the NYT</a></li>
           </ul>
-        </div>
       </div>
     </script>
 

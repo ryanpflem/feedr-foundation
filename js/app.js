@@ -1,30 +1,60 @@
+$(document).foundation();
+
 var MyApp = {};
 MyApp.articles = [];
 
-$(document).foundation();
 
-$.ready(nytimesApiCall())
-function nytimesApiCall() {
+// Compile element using handlebars
+MyApp.compileArticles = function (articleObject) {
+  var source = $("#article-template").html();
+  var template = Handlebars.compile(source);
+  return template(articleObject);
+}
 
-var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-url += '?' + $.param({
-  'api-key': "",
-  'sort': "newest",
-  'page': 0
-});
-$.ajax({
-  url: url,
-  method: 'GET',
-  dataType: 'json'
-}).done(function(result) {
-  console.log(result);
 
+// Construct and execute ajax request
+MyApp.getArticles = function (query, filter, beginDate, endDate, highlight, page) {
+
+	var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+
+	// Always append api key
+	var params = new Object();
+	params['api-key'] = "7d82bb2272964cb69a82487397c33b47";
+	// Append 'fl' parameter to limit returned fields and improve speed?
+
+
+	// Aappend params if they are present
+	if (query) params.q = query
+	if (filter) params.fq = filter
+	if (beginDate) params.begin_date = beginDate
+	if (endDate) params.end_date = endDate
+	if (highlight) params.hl = highlight
+	if (page) params.page = page
+
+	// Construct url
+	url += '?' + $.param(params);
+
+	$.ajax({
+	  url: url,
+	  method: 'GET',
+	}).done(function(result) {
+    console.log("success");
+    console.log(result);
+	  MyApp.buildArticleObject(result); // call the buildArticleObject function here
+	}).fail(function(err) {
+	  throw err;
+	});
+}
+
+
+// Build the article object from the response
+MyApp.buildArticleObject = function (result) {
+  
   var results = result.response.docs;
 
   for (i=0; i<results.length; i++){
     var category = results[i].news_desk;
     var section = results[i].section_name;
-    // var sectionUrl = section.toLowerCase();
     var date = (results[i].pub_date).slice(0, -10);
     var headline = results[i].headline.main;
     var author = results[i].byline.original;
@@ -32,10 +62,14 @@ $.ajax({
     var source = results[i].source;
     var url = results[i].web_url;
     var image = results[i].multimedia[1];
+    var sectionUrl;
 
-    MyApp.articles.push({
+    var articleObject = MyApp.articles;
+
+    articleObject.push({
       articleCategory: category,
       articleSection: section,
+      articleSectionUrl: sectionUrl,
       articleDate: date,
       articleHeadline: headline,
       articleAuthor: author,
@@ -46,62 +80,55 @@ $.ajax({
     })
   }
 
-  console.log(MyApp.articles);
+  MyApp.getImageUrl(articleObject);
+
+  MyApp.getSectionUrl(articleObject);
+
+  console.log("Article Object going to template")
+  console.log(articleObject);
 
   var $articleFeed = $("#article-feed");
-  MyApp.populateArticle($articleFeed);
-
-}).fail(function(err) {
-  throw err;
-});
-
-} //fn nytimesApiCall
-
-
-// Compile element using handlebars
-MyApp.compileArticle = function (article) {
-  var source = $("#article-template").html();
-  var template = Handlebars.compile(source);
-  return template(article);
+  MyApp.populateArticles($articleFeed);
 }
 
-// Initial population of the article from articles array
-MyApp.populateArticle = function (article) {
-  article.empty(); //empty the current article
-  for (var i=0; i<MyApp.articles.length; ++i) {
-    var newArticle = MyApp.compileArticle(MyApp.articles[i]); //complie all the articles in the array
-    article.append(newArticle); //append all the articles in the article-feed
+//If there is no multimedia image, fill it with a placeholder
+//Else add the href string neccessary to make image link whole
+MyApp.getImageUrl = function (articleObject) {
+  for (var i=0; i<articleObject.length; ++i) {
+    if (typeof articleObject[i].articleImages === 'undefined' ) {
+      articleObject[i].articleImages = Object.assign({url: "http://placehold.it/850x350"});
+    } else {
+      articleObject[i].articleImages = Object.assign({url: "https://static01.nyt.com/" + MyApp.articles[i].articleImages.url});
+    }    
   }
 }
 
-MyApp.getArticles = function(query, filter, beginDate, endDate, highlight, page) {
 
-	var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+//Get the appropriate lowercase string to fill in the section/pages href link
+MyApp.getSectionUrl = function (articleObject) {
+  for (var i=0; i<articleObject.length; ++i) {
+    if (typeof articleObject[i].articleSection != null) {
+      //do nothing
+    } else if (typeof articleObject[i].articleSection != 'undefined') {
+        if (articleObject[i].articleSection === "Food") {
+        articleObject[i].articleSectionUrl = "pages/" + articleObject[i].articleCategory.toLowerCase();
+      } else {
+        articleObject[i].articleSectionUrl = "section/" + articleObject[i].articleSection.toLowerCase();
+      }
+    }
+  }
+}
 
-	//always append api key
-	var params = new Object();
-	params['api-key'] = "";
-	//maybe append 'fl' parameter to limit returned fields and improve speed?
+
+// Population of the article template from articles array
+MyApp.populateArticles = function ($articleFeed) {
+  $articleFeed.empty(); //empty the current article-feed
+  for (var i=0; i<MyApp.articles.length; ++i) {      
+    var newArticle = MyApp.compileArticles(MyApp.articles[i]); //complie all the articles in the array
+    $articleFeed.append(newArticle); //append all the articles in the article-feed
+  }
+}
 
 
-	//append params if they are present
-	if (query) params.q = query
-	if (filter) params.fq = filter
-	if (beginDate) params.begin_date = beginDate
-	if (endDate) params.end_date = endDate
-	if (highlight) params.hl = highlight
-	if (page) params.page = page
-
-	//construct url
-	url += '?' + $.param(params);
-
-	$.ajax({
-	  url: url,
-	  method: 'GET',
-	}).done(function(result) {
-	  updatePage(result); // call the page update function here
-	}).fail(function(err) {
-	  throw err;
-	});
-} 
-
+// Call the getArticles function on page load
+$.ready(MyApp.getArticles());
