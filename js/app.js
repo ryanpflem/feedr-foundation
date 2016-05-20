@@ -19,7 +19,7 @@ MyApp.getArticles = function (query, filter, beginDate, endDate, highlight, page
 
 	// Always append api key
 	var params = new Object();
-	params['api-key'] = "7d82bb2272964cb69a82487397c33b47";
+	params['api-key'] = "";
 	// Append 'fl' parameter to limit returned fields and improve speed?
 
 
