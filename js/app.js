@@ -19,7 +19,7 @@ MyApp.getArticles = function (query, filter, beginDate, endDate, highlight, page
 
 	// Always append api key
 	var params = new Object();
-	params['api-key'] = "";
+	params['api-key'] = "7d82bb2272964cb69a82487397c33b47";
 	// Append 'fl' parameter to limit returned fields and improve speed?
 
 
@@ -107,14 +107,19 @@ MyApp.getImageUrl = function (articleObject) {
 //Get the appropriate lowercase string to fill in the section/pages href link
 MyApp.getSectionUrl = function (articleObject) {
   for (var i=0; i<articleObject.length; ++i) {
-    if (typeof articleObject[i].articleSection != null) {
-      //do nothing
-    } else if (typeof articleObject[i].articleSection != 'undefined') {
-        if (articleObject[i].articleSection === "Food") {
-        articleObject[i].articleSectionUrl = "pages/" + articleObject[i].articleCategory.toLowerCase();
-      } else {
-        articleObject[i].articleSectionUrl = "section/" + articleObject[i].articleSection.toLowerCase();
-      }
+    var sectionValue = articleObject[i].articleSection;
+
+    if(sectionValue === null) {
+     articleObject[i].articleSectionUrl = "undefined";
+    }
+    else if (sectionValue === "Food") {
+      articleObject[i].articleSectionUrl = "pages/" + articleObject[i].articleCategory.toLowerCase();
+    }
+    else if(sectionValue === 'undefined') {
+      articleObject[i].articleSectionUrl = "undefined";
+    }
+    else {
+      articleObject[i].articleSectionUrl = "section/" + articleObject[i].articleSection.toLowerCase();
     }
   }
 }

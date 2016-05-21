@@ -15,8 +15,15 @@
 	margin-bottom: 2rem;
 }
 
-.parameters li {
-	list-style-type: none;
+.parameters {
+	margin-bottom: 2rem;
+	li {
+		list-style-type: none;
+	}
+}
+
+#article-feed {
+	margin-bottom: 2rem;
 }
 
 .blog-post small {
@@ -29,4 +36,39 @@
 	&:hover {
 		border-bottom: 1px solid map-get($foundation-palette, red);
 	}
+}
+
+.footer {
+  background-color: darken(map-get($foundation-palette, grey), 10%);
+  // background-color: #292c2f;
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 4rem;
+  p {
+    &.slogan {
+      color: #8d9093;
+      font-size: 1.8rem;
+      margin: 0 0 1rem;
+    }
+    &.copywrite {
+      color: #8f9296;
+      font-size: 0.875rem;
+      margin: 0;
+    }
+  }
+  .links a {
+    list-style: none;
+    font-weight: bold;
+    color: $white;
+    padding: 3rem 0 2rem;
+    margin: 0;
+    &::after {
+      content: "•";
+      padding: 0 0.4rem 0 0.8rem;
+    }
+    &:last-child::after {
+      content: "";
+      padding: 0 0.4rem 0 0.8rem;
+    }
+  }
 }

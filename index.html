@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>feedr - New York Times</title>
     <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="node_modules/foundation-datepicker/css/foundation-datepicker.css">
     <link rel="icon" href="/favicon.ico">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
   </head>
   <body>
       <div class="top-bar">
@@ -17,9 +19,8 @@
         </div>
         <div class="top-bar-right">
           <ul class="menu">
-            <li><a href="#">Link1</a></li>
-            <li><a href="#">Link2</a></li>
-            <li><a href="#">Link3</a></li>
+            <li><a href="http://developer.nytimes.com/article_search_v2.json" target="_blank">API Docs</a></li>
+            <li><a href="https://github.com/ryanpflem/feedr-foundation" target="_blank">Fork Me</a></li>
           </ul>
         </div>
       </div>
@@ -31,26 +32,41 @@
     </div>
 
     <div class="row" id="content">
-      <div class="medium-3 columns" data-sticky-container>
+      <div class="medium-3 columns parameters" data-sticky-container>
         <div class="sticky" data-sticky data-anchor="content">
         <h4>API Parameters</h4>
-        <ul class="parameters">
+        <ul>
           <li><label for="">Search</label></li>
           <li><input type="text"></li>
           <li><label for="">Filter</label></li>
           <li><input type="text"></li>
           <li><label for="">Start Date</label></li>
-          <li><input type="text"></li>
+          <li><input type="text" class="span2" data-date-format="mm/dd/yyyy" id="dp1"></li>
           <li><label for="">End Date</label></li>
-          <li><input type="text"></li>
+          <li><input type="text" class="span2" data-date-format="mm/dd/yyyy" id="dp2"></li>
           <li><label for="">Page</label></li>
           <li><input type="text"></li>
         </ul>
         </div>
       </div>
-      <div id="article-feed" class="medium-8 columns">
+      <div id="article-feed" class="medium-offset-1 medium-7 columns">
       </div>
     </div>
+    <footer class="footer">
+      <div class="row">
+        <div class="small-12 columns">
+          <p class="slogan">New York Times feedr</p>
+          <p class="links">
+            <a href="http://developer.nytimes.com/article_search_v2.json" target="_blank">API Docs</a>
+            <a href="https://github.com/ryanpflem/feedr-foundation" target="_blank">Fork Me</a>            
+            <a href="#">About</a>
+            <a href="#">Faq</a>
+            <a href="#">Contact</a>
+          </p>
+          <p class="copywrite"></p>
+        </div>
+      </div>
+  </footer>
 
     <script id="article-template" type="text/x-handlebars-template">   
       <div class="blog-post">
@@ -70,7 +86,26 @@
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/what-input/what-input.js"></script>
     <script src="bower_components/foundation-sites/dist/foundation.js"></script>
+    <script src="node_modules/foundation-datepicker/js/foundation-datepicker.js"></script>
     <script src="js/handlebars-v4.0.5.js"></script>
     <script src="js/app.js"></script>
+    <script>
+      $(function(){
+        var nowTemp = new Date();
+        var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+        $('#dp1').fdatepicker({
+          initialDate: now,
+          format: 'mm-dd-yyyy',
+          disableDblClickSelection: true,
+          closeButton: true
+        });
+        $('#dp2').fdatepicker({
+          initialDate: now,
+          format: 'mm-dd-yyyy',
+          disableDblClickSelection: true,
+          closeButton: true
+        });
+      });
+    </script>
   </body>
 </html>
