@@ -480,7 +480,7 @@ $anchor-color-hover: scale-color($anchor-color, $lightness: -14%);
 // ----------
 
 // $switch-background: $medium-gray;
-// $switch-background-active: $primary-color;
+$switch-background-active: map-get($foundation-palette, red);
 // $switch-height: 2rem;
 // $switch-height-tiny: 1.5rem;
 // $switch-height-small: 1.75rem;

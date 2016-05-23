@@ -11,75 +11,97 @@
     <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
   </head>
   <body>
-      <div class="top-bar">
-        <div class="top-bar-left">
-          <ul class="menu">
-            <li class="menu-text"><a href="#">feedr</a></li>
-          </ul>
-        </div>
-        <div class="top-bar-right">
-          <ul class="menu">
-            <li><a href="http://developer.nytimes.com/article_search_v2.json" target="_blank">API Docs</a></li>
-            <li><a href="https://github.com/ryanpflem/feedr-foundation" target="_blank">Fork Me</a></li>
-          </ul>
-        </div>
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <ul class="menu">
+          <li class="menu-text"><a href="http://localhost:3000" title="feedr">feedr</a></li>
+        </ul>
       </div>
-    <div class="callout large app-header green">
+      <div class="top-bar-right">
+        <ul class="menu">
+          <li><a href="http://developer.nytimes.com/article_search_v2.json" target="_blank" title="API Docs">API Docs</a></li>
+          <li><a href="https://github.com/ryanpflem/feedr-foundation" target="_blank" title="Fork Me">Fork Me</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout large app-header green" id="top-of-page">
       <div class="row column text-center">
         <h1>New York Times feedr</h1>
         <h2 class="subheader">Using the Article Search API</h2>
       </div>
     </div>
-
+    <!-- popup -->
+    <div id="article_popup">
+      <i class="article_popup_close">Close</i>
+      <span>
+        <iframe src=""></iframe>
+      </span>     
+    </div>
+    <!-- popup -->
     <div class="row" id="content">
       <div class="medium-3 columns parameters" data-sticky-container>
-        <div class="sticky" data-sticky data-anchor="content">
+        <div class="sticky" data-sticky data-top-anchor="content" data-btm-anchor="footer:top">
         <h4>API Parameters</h4>
         <ul>
-          <li><label for="">Search</label></li>
-          <li><input type="text"></li>
-          <li><label for="">Filter</label></li>
-          <li><input type="text"></li>
-          <li><label for="">Start Date</label></li>
-          <li><input type="text" class="span2" data-date-format="mm/dd/yyyy" id="dp1"></li>
-          <li><label for="">End Date</label></li>
-          <li><input type="text" class="span2" data-date-format="mm/dd/yyyy" id="dp2"></li>
-          <li><label for="">Page</label></li>
-          <li><input type="text"></li>
+          <li><label class="grey label" for="search-input">Search <span class="api-ref">[q-string]</span></label></li>
+          <li><input type="text" id="query"></li>
+          <li><label class="grey label" for="highlight-switch">Highlight search results?</label></li>
+          <li>
+            <div class="switch">
+              <input class="switch-input" id="highlight" type="checkbox" name="highlight-switchs">
+              <label class="switch-paddle" for="highlight">
+                <span class="show-for-sr">Highlight search results?</span>
+              </label>
+            </div>
+          </li>
+          <li><label class="grey label" for="filter-input">Filter <span class="api-ref">[fq-string]</span></label></li>
+          <li><input type="text" id="filter"></li>
+          <li><label class="grey label" for="start-date-input">Start Date <span class="api-ref">[begin_date-string]</span></label></li>
+          <li><input type="text" class="span2 startDate" data-date-format="mm/dd/yyyy" id="dp1"></li>
+          <li><label class="grey label" for="end-date-input">End Date <span class="api-ref">[end_date-string]</span></label></li>
+          <li><input type="text" class="span2 endDate" data-date-format="mm/dd/yyyy" id="dp2"></li>
+          <li><label class="grey label" for="page-input">Page <span class="api-ref">[page-integer]</span></label></li>
+          <li><input type="number" min="0" id="page"></li>
+          <a href="#top-of-page"><button type="button" class="red button" id="findArticles">Find My Articles</button></a>
         </ul>
         </div>
       </div>
-      <div id="article-feed" class="medium-offset-1 medium-7 columns">
+      <div id="article-feed" class="medium-offset-2 medium-6 columns">
+      </div>
+      <div class="medium-5 columns read-more">
+        <button type="button" class="red button" id="moreArticles">See More Articles</button>  
       </div>
     </div>
-    <footer class="footer">
+    <footer class="footer" id="footer">
       <div class="row">
         <div class="small-12 columns">
           <p class="slogan">New York Times feedr</p>
           <p class="links">
-            <a href="http://developer.nytimes.com/article_search_v2.json" target="_blank">API Docs</a>
-            <a href="https://github.com/ryanpflem/feedr-foundation" target="_blank">Fork Me</a>            
-            <a href="#">About</a>
-            <a href="#">Faq</a>
-            <a href="#">Contact</a>
+            <a href="http://localhost:3000" title="feedr">feedr</a>
+            <a href="http://developer.nytimes.com/article_search_v2.json" target="_blank" title="API Docs">API Docs</a>
+            <a href="https://github.com/ryanpflem/feedr-foundation" target="_blank" title="Fork Me">Fork Me</a>
           </p>
-          <p class="copywrite"></p>
         </div>
       </div>
-  </footer>
+    </footer>
 
-    <script id="article-template" type="text/x-handlebars-template">   
+    <script id="article-template" type="text/x-handlebars-template">
       <div class="blog-post">
-        <h3>{{articleHeadline}}<small>{{articleDate}}</small></h3>
-          <img class="thumbnail" src="{{articleImages.url}}">
-        <p>{{articleSnippet}}</p>
+        <h3 class="article_popup_open" popupurl="{{articleUrl}}">{{articleHeadline}}<small>{{articleDate}}</small></h3>
+          {{#if articleImages.url}}
+          <img class="thumbnail article_popup_open" popupurl="{{articleUrl}}" src="{{articleImages.url}}">
+          {{/if}}
+        <p class="snippet">{{{articleSnippet}}}</p>
         <div class="callout grey">
           <ul class="menu simple">
             <li>{{articleAuthor}}</li>
-            <li>{{articleCategory}}</li>
-            <li>Section: <a href="https://www.nytimes.com/{{articleSectionUrl}}" target="_blank">{{articleSection}}</a></li>
+            <!-- <li>Category: {{articleCategory}}</li> -->
+            <li>Section: <span class="section">{{articleSection}}</span></li>
             <li><a href="{{articleUrl}}" target="_blank">Read on the NYT</a></li>
           </ul>
+          <div>
+            <span class="keyword"></span>
+          </div>
       </div>
     </script>
 
@@ -88,6 +110,7 @@
     <script src="bower_components/foundation-sites/dist/foundation.js"></script>
     <script src="node_modules/foundation-datepicker/js/foundation-datepicker.js"></script>
     <script src="js/handlebars-v4.0.5.js"></script>
+    <script src="https://cdn.rawgit.com/vast-engineering/jquery-popup-overlay/1.7.13/jquery.popupoverlay.js"></script>
     <script src="js/app.js"></script>
     <script>
       $(function(){
@@ -95,13 +118,13 @@
         var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
         $('#dp1').fdatepicker({
           initialDate: now,
-          format: 'mm-dd-yyyy',
+          format: 'yyyy-mm-dd',
           disableDblClickSelection: true,
           closeButton: true
         });
         $('#dp2').fdatepicker({
           initialDate: now,
-          format: 'mm-dd-yyyy',
+          format: 'yyyy-mm-dd',
           disableDblClickSelection: true,
           closeButton: true
         });
