@@ -1,10 +1,16 @@
 $(document).foundation();
 
-var MyApp = {};
-var $parametersButton = $("#findArticles");
-var $moreArticlesButton = $("#moreArticles");
-var currentPage;
-
+//Global variables
+var $notificationCallout = $('#notificationCallout'),
+    $notification = $('#notification'),
+    $content = $('#content'),
+    $loader = $('#loader'),
+    $parametersButton = $("#findArticlesButton"),
+    $moreArticles = $("#moreArticles"),
+    $moreArticlesButton = $("#moreArticlesButton"),
+    $articlePopup = $('#article_popup'),
+    currentPage,
+    MyApp = {};
 
 //Compile element using handlebars
 MyApp.compileArticles = function (articleObject) {
@@ -15,24 +21,9 @@ MyApp.compileArticles = function (articleObject) {
 
 
 //Construct and execute ajax request
-MyApp.getArticles = function ($query, $filter, $beginDate, $endDate, $highlight, $page) {
-
-  var today = new Date();
-  var dd = today.getDate();
-  var mm = today.getMonth()+1; //January is 0
-  var yyyy = today.getFullYear();
-
-  if(dd<10) {
-    dd='0'+dd;
-  } 
-
-  if(mm<10) {
-    mm='0'+mm;
-  }
-
-  today = yyyy + mm + dd;
-
-  $('#article_popup').popup({
+MyApp.getArticles = function ($query, $filter, $source, $section, $beginDate, $endDate, $highlight, $page) {
+  
+  $articlePopup.popup({
     transition: 'all 0.3s'
   });
 
@@ -40,43 +31,48 @@ MyApp.getArticles = function ($query, $filter, $beginDate, $endDate, $highlight,
 	//Always append api key
 	var params = new Object();
 	params['api-key'] = "7d82bb2272964cb69a82487397c33b47";
-	//Append 'fl' parameter to limit returned fields and improve speed?
+
+  console.log("$query = " + $query)
+  console.log("$filter = " + $filter)
+  console.log("$source = " + $source)
+  console.log("$section = " + $section)
+  console.log("$beginDate = " + $beginDate)
+  console.log("$endDate = " + $endDate)
+  console.log("$page = " + $page)
 
 	//Aappend params if they are present
 	if ($query) params.q = $query;
-  console.log($query)
+  console.log("params.q = " + $query)
 
-	if ($filter) params.fq = $filter;
-  console.log($filter)
-
-	if ($beginDate) {
-    params.begin_date = $beginDate;
+  if ($source !== '"undefined"' && $section !== '"undefined"') {
+    params.fq = "source:(" + $source + ") AND section_name:(" + $section + ")," + $filter
+  } else if ($source !== '"undefined"' && $section === '"undefined"') {
+    params.fq = "source:(" + $source + ")," + $filter
+  } else if ($source === '"undefined"' && $section !== '"undefined"') {
+    params.fq = "section_name:(" + $section + ")," + $filter
   } else {
-    params.begin_date = today;
+    params.fq = $filter;
   }
-  console.log($beginDate)
+  console.log("params.fq = " + params.fq)
 
-	if ($endDate) {
-    params.end_date = $endDate;
-  } else {
-    params.end_date = today;
-  }
-  console.log($endDate)
+	if ($beginDate) params.begin_date = $beginDate;
+  console.log("params.begin_date = " + $beginDate)
+
+	if ($endDate) params.end_date = $endDate;
+  console.log("params.end_date = " + $endDate)
 
   if ($highlight) params.hl = $highlight;
+  console.log("params.hl = " + $highlight)
     
 	if ($page) {
     params.page = $page;
     currentPage = $page;
-  } else {
-    params.page = 0;
-    currentPage = $page;
   }
-  console.log('$page = ' + $page)
+  console.log('params.page = ' + $page)
   console.log('currentPage = ' + currentPage)
 
 
-	// Construct url
+	//Construct url
 	url += '?' + $.param(params);
   console.log(url)
 
@@ -88,18 +84,33 @@ MyApp.getArticles = function ($query, $filter, $beginDate, $endDate, $highlight,
     console.log(result);
 	  MyApp.buildArticleObject(result); //Call the buildArticleObject function here
 	}).fail(function(err) {
-	  throw err;
+    MyApp.errorNotify(err);
+    throw err;
 	});
 
+}
+
+
+//Error callout function
+MyApp.errorNotify = function (err) {
+  $moreArticles.hide();
+  $notificationCallout.show();
+  $notification.html('<p>' + err + '</p>');
 }
 
 
 //Build the article object from the response
 MyApp.buildArticleObject = function (result) {
   
-  var results = result.response.docs;
   MyApp.articles = [];
   var articleObject = MyApp.articles;
+  var results = result.response.docs;
+
+  //If result is empty, notify the user
+  if (results.length < 1) {
+    var err = "No Articles Match Your Search"
+    MyApp.errorNotify(err);
+  }
 
   //Check json values for null or undefined, if so make them an empty string
   for (i=0; i<results.length; i++){
@@ -111,7 +122,7 @@ MyApp.buildArticleObject = function (result) {
       }
 
     //Pull out the values needed to populate the content
-    var category = results[i].news_desk;
+    var newsDesk = results[i].news_desk;
     var section = results[i].section_name;
     var date = (results[i].pub_date).slice(0, -10);
     var headline = results[i].headline.main;
@@ -124,9 +135,8 @@ MyApp.buildArticleObject = function (result) {
 
     //Push those values into the articleObject array
     articleObject.push({
-      articleCategory: category,
-      articleSection: section,
-      articleSectionUrl: sectionUrl,
+      articlenewsDesk: newsDesk,
+      articleSection: section,      
       articleDate: date,
       articleHeadline: headline,
       articleAuthor: author,
@@ -134,21 +144,22 @@ MyApp.buildArticleObject = function (result) {
       articleImages: image,
       articleSource: source,
       articleUrl: url
-    })
+    });
   }
 
   MyApp.getImageUrl(articleObject); //Call the getImageUrl function here
 
   console.log("Article Object going to template")
-  console.log(articleObject);
+  console.log(articleObject)
 
   var $articleFeed = $("#article-feed");
   MyApp.populateArticles($articleFeed); //Call the populateArticles function here
 
-  $('.article_popup_open').on('click', MyApp.setPopupContent);
+  $('.article_popup_open').on('click', MyApp.setPopupContent); //Call the setPopupContent function
 }
 
-//If there is no multimedia image (value = undefined), make the value empty
+
+//If there is no multimedia image (value = undefined), make the value empty so an <img> in not loaded
 //Else add the href string neccessary to make image link complete
 MyApp.getImageUrl = function (articleObject) {
   for (var i=0; i<articleObject.length; ++i) {    
@@ -163,49 +174,74 @@ MyApp.getImageUrl = function (articleObject) {
 
 //Population of the article template from articles array
 MyApp.populateArticles = function ($articleFeed) {
-  $articleFeed.empty(); //empty the current article-feed
+  $articleFeed.empty(); //Empty the current article-feed
+  MyApp.showContent();
+
   for (var i=0; i<MyApp.articles.length; ++i) {      
-    var newArticle = MyApp.compileArticles(MyApp.articles[i]); //complie all the articles in the array
-    $articleFeed.append(newArticle); //append all the articles in the article-feed
+    var newArticle = MyApp.compileArticles(MyApp.articles[i]); //Complie all the articles in the array    
+    $articleFeed.append(newArticle); //Append all the articles in the article-feed
   }
 }
 
 
-//Pop-up function
+//Article pop-up function
 MyApp.setPopupContent = function (){
   var url = this.attributes["popupurl"].value;
   $("#article_popup iframe").attr('src', url);
 }
 
 
-//Click on 'findArticles' button to send params to MyApp.getArticles
+//Click handler on 'findArticles' button to send params to MyApp.getArticles
 $parametersButton.on('click', function(event) {
+  event.preventDefault(event);
 
-  var $queryValue = $("#query"),
+  $notificationCallout.hide(); ////Hide the error notification on the page
+  $content.hide(); //Hide the main content on the page
+  $loader.show(); //Show the loader on the the page
+
+  var $sourceValue = $('#source'),
+      $sectionValue = $('#section'),
+      $queryValue = $("#query"),
       $highlightValue = $("#highlight"),
       $filterValue = $("#filter"),
       $beginDateValue = $(".startDate"),
       $endDateValue = $(".endDate"),
-      $pageValue = $("#page")
+      $pageValue = $("#page");
 
-  var $params = new Parameters($queryValue, $filterValue, $beginDateValue, $endDateValue, $highlightValue, $pageValue);
+  var params = new Parameters($queryValue, $filterValue, $sourceValue, $sectionValue, $beginDateValue, $endDateValue, $highlightValue, $pageValue);
 
-  $query = $params.$query
-  $filter = $params.filter
-  $beginDate = $params.$beginDate
-  $endDate = $params.$endDate
-  $highlight = $params.$highlight
-  $page = $params.$page
+  $source = params.$source;
+  console.log('$source = ' + $source)
+  $section = params.$section;
+  console.log('$section = ' + $section)
+  $query = params.$query;
+  console.log('$query = ' + $query)
+  $filter = params.$filter;
+  console.log('$filter = ' + $filter)
+  $beginDate = params.$beginDate;
+  $endDate = params.$endDate;
+  $highlight = params.$highlight;
+  $page = params.$page;
 
-  //Call the getArticles function on click
-  MyApp.getArticles($query, $filter, $beginDate, $endDate, $highlight, $page);
+  //Call the getArticles function
+  MyApp.getArticles($query, $filter, $source, $section, $beginDate, $endDate, $highlight, $page);
+});
+
+
+//Submit handler on 'findArticles' button
+$parametersButton.on('submit', function(event) {
+  event.preventDefault(event);
+  console.log('Handler for .submit() called')
+  $parametersButton.trigger('click'); //Trigger the click function on submit
 });
 
 
 //Parameters constructor function
-function Parameters($queryValue, $filterValue, $beginDateValue, $endDateValue, $highlightValue, $pageValue) {
+function Parameters($queryValue, $filterValue, $sourceValue, $sectionValue, $beginDateValue, $endDateValue, $highlightValue, $pageValue) {
   this.$query = $queryValue.val();
   this.$filter = $filterValue.val();
+  this.$source = '"' + $sourceValue.val() + '"';
+  this.$section = '"' + $sectionValue.val() + '"';
   this.$beginDate = $beginDateValue.val().replace(/-/g, "");
   this.$endDate = $endDateValue.val().replace(/-/g, "");
   this.$highlight = $highlightValue.is(':checked');
@@ -213,47 +249,38 @@ function Parameters($queryValue, $filterValue, $beginDateValue, $endDateValue, $
 }
 
 
-//On click, gathers inputs from current parameters and +1 to page
-// $moreArticlesButton.on('click', function(event) {
-//   console.log('currentPage = ' + currentPage)
+//Sets intial url parameters on page load
+MyApp.getInitialParams = function () {  
 
-//   var $queryValue = $("#query"),
-//       $highlightValue = $("#highlight"),
-//       $filterValue = $("#filter"),
-//       $beginDateValue = $(".startDate"),
-//       $endDateValue = $(".endDate"),
-//       $pageValue = $("#page")
+  var $query = "",
+      $filter = "",
+      $source = '"undefined"',
+      $section = '"undefined"',
+      $beginDate,
+      $endDate,
+      $highlight = false,
+      $page;
 
-//   var $params = new Parameters($queryValue, $filterValue, $beginDateValue, $endDateValue, $highlightValue, $pageValue);
-
-//   $query = $params.$query
-//   $filter = $params.filter
-//   $beginDate = $params.$beginDate
-//   $endDate = $params.$endDate
-//   $highlight = $params.$highlight
-//   $page = $params.$page
-
-//   console.log('$page = ' + $page)
-
-//   if (typeof currentPage === 'undefined') {
-//     console.log('true')
-//     currentPage = 0;
-//     console.log(currentPage)
-//   }
-//   else {
-//     currentPage = currentPage
-//   }
-
-//   currentPage++
-//   console.log('page to request is ' + currentPage)
-
-//   $page = currentPage
-
-//   MyApp.getArticles($query, $filter, $beginDate, $endDate, $highlight, $page);
-
-// });
+   MyApp.getArticles($query, $filter, $source, $section, $beginDate, $endDate, $highlight, $page);
+}
 
 
+//Hide the content
+MyApp.hideContent = function () {
+  $notificationCallout.hide(); //Hide the Error notification callout on page load
+  $content.hide(); //Hide the main content on page load
+}
 
-//Call the getArticles function on page load
-$.ready(MyApp.getArticles());
+
+//Show the content
+MyApp.showContent = function () {
+  $loader.hide(); //Hide the loader
+  $content.show(); //Show the main content
+}
+
+
+//Hide content, get initial parameters when page ready
+$(document).ready(function() {
+  MyApp.hideContent();
+  MyApp.getInitialParams();
+});

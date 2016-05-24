@@ -19,6 +19,13 @@
   box-shadow: 0 0 6px 1px map-get($foundation-palette, red);
 }
 
+.loader {
+  margin: 5rem 0;
+  .progress {
+    height: 3rem;
+  }
+}
+
 .parameters {
 	margin-bottom: 2rem;
 	li {
@@ -26,12 +33,22 @@
 	}
   label {
     margin: 1rem 0;
+    border-radius: $global-radius;
   }
   .switch {
     margin-bottom: 0;
   }
+  .switch-paddle {
+    margin-top: 0;
+  }
   .api-ref {
     color: lighten(map-get($foundation-palette, green), 10%);
+  }
+}
+
+.error-notification {
+  p {
+    font-weight: bold;
   }
 }
 
@@ -39,8 +56,16 @@
 	margin-bottom: 2rem;
 }
 
-.blog-post small {
+.blog-post {
+  time {
 	padding-left: 10px;
+  color: $dark-gray;
+  }
+  p > strong {
+    background: lighten(map-get($foundation-palette, green), 20%);
+    padding: 3px;
+    border-radius: $global-radius;
+  }
 }
 
 .callout .menu > li > a {
@@ -61,7 +86,6 @@
 
 .footer {
   background-color: darken(map-get($foundation-palette, grey), 10%);
-  // background-color: #292c2f;
   text-align: center;
   font-size: 1.2rem;
   padding: 4rem;

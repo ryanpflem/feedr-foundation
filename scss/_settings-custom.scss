@@ -71,7 +71,7 @@ $foundation-palette: (
 // $global-padding: 1rem;
 // $global-weight-normal: normal;
 // $global-weight-bold: bold;
-// $global-radius: 0;
+$global-radius: 3px;
 // $global-text-direction: ltr;
 // $global-flexbox: false;
 // $print-transparent-backgrounds: true;
@@ -447,7 +447,7 @@ $anchor-color-hover: scale-color($anchor-color, $lightness: -14%);
 // $progress-height: 1rem;
 // $progress-background: $medium-gray;
 // $progress-margin-bottom: $global-margin;
-// $progress-meter-background: $primary-color;
+$progress-meter-background: map-get($foundation-palette, red);
 // $progress-radius: $global-radius;
 
 // 28. Reveal
