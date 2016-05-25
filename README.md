@@ -29,7 +29,7 @@ npm install --save-dev gulp-webserver
 [jquery-popup-overlay](https://github.com/vast-engineering/jquery-popup-overlay)
 
 **Note - Github pages blocks iframes to prevent clickjacking by sending the "X-Frame-Options: deny" header for every page.**
-This will block the pop-up overlay as seen on the hosted site.  If you use this on your local machine or a hosted server this will not be an issue.
+This will block the pop-up overlay as seen on the ```gh-pages``` site.  If you use this on your local machine or a hosted server this will not be an issue.
 
 [Foundation-datepicker.js](http://foundation-datepicker.peterbeno.com/example.html)
 
