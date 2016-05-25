@@ -30,7 +30,7 @@ MyApp.getArticles = function ($query, $filter, $source, $section, $beginDate, $e
   var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
 	//Always append api key
 	var params = new Object();
-	params['api-key'] = "7d82bb2272964cb69a82487397c33b47";
+	params['api-key'] = "YOUR API KEY HERE!!";
 
   console.log("$query = " + $query)
   console.log("$filter = " + $filter)
