@@ -2,8 +2,6 @@
 
 This is the NY Times feedr app developed with [Foundation for Sites 6](http://foundation.zurb.com/sites).
 
-Note
-
 ## Dependencies
 
 To use this template, your computer needs:
