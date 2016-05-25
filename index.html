@@ -1,0 +1,255 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feedr - New York Times</title>
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="node_modules/foundation-datepicker/css/foundation-datepicker.css">
+    <link rel="icon" href="/favicon.ico">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="top-bar">
+      <div class="top-bar-left">
+        <ul class="menu">
+          <li class="menu-text"><a href="http://localhost:3000" title="feedr">feedr</a></li>
+        </ul>
+      </div>
+      <div class="top-bar-right">
+        <ul class="menu">
+          <li><a href="http://developer.nytimes.com/article_search_v2.json" target="_blank" title="API Docs">API Docs</a></li>
+          <li><a href="https://github.com/ryanpflem/feedr-foundation" target="_blank" title="Fork Me">Fork Me</a></li>
+        </ul>
+      </div>
+    </nav>
+    <!-- /Navigation -->
+    <!-- Header -->
+    <div class="callout large app-header green" id="top-of-page">
+      <div class="row column text-center">
+        <h1>New York Times feedr</h1>
+        <h2 class="subheader">Using the Article Search API</h2>
+      </div>
+    </div>
+    <!-- /Header -->
+    <!-- Popup -->
+    <div id="article_popup">
+      <i class="article_popup_close">Close</i>
+      <span>
+        <iframe src=""></iframe>
+      </span>     
+    </div>
+    <!-- /Popup -->    
+    <!-- Loader -->
+    <div class="loader">
+      <div class="row" id="loader">
+        <div class="progress medium-8 medium-offset-2 columns" role="progressbar" tabindex="0" aria-valuenow="40" aria-valuemin="0" aria-valuetext="40 percent" aria-valuemax="100">
+          <span class="progress-meter" style="width: 40%">
+            <p class="progress-meter-text">Loading</p>
+          </span>
+        </div>
+      </div>
+    </div>
+    <!-- /Loader -->
+    <!-- Main Content -->
+    <main class="row" id="content">
+      <!-- Params Sidebar -->
+      <aside class="medium-3 columns parameters" id="parameters">
+        <div>
+        <h4>API Parameters</h4>
+        <ul>
+          <li><label class="grey label" for="source">Source <span class="api-ref">[source:]</span></label></li>
+          <li>
+            <select id="source">
+              <option value="undefined">All</option>
+              <option value="AP">AP</option>
+              <option value="Reuters">Reuters</option>
+              <option value="The New York Times">The New York Times</option>
+            </select>
+          </li>
+          <li><label class="grey label" for="source">Section <span class="api-ref">[section_name:]</span></label></li>
+          <li>
+            <select id="section">
+              <option value="undefined">All</option>
+              <option value="Arts">Arts</option>
+              <option value="Automobiles">Automobiles</option>
+              <option value="Autos">Autos</option>
+              <option value="Blogs">Blogs</option>
+              <option value="Books">Books</option>
+              <option value="Booming">Booming</option>
+              <option value="Business">Business</option>
+              <option value="Business Day">Business Day</option>
+              <option value="Corrections">Corrections</option>
+              <option value="Crosswords & Games">Crosswords & Games</option>
+              <option value="Crosswords/Games">Crosswords/Games</option>
+              <option value="Dining & Wine">Dining & Wine</option>
+              <option value="Dining and Wine">Dining and Wine</option>
+              <option value="Editors' Notes">Editors' Notes</option>
+              <option value="Education">Education</option>
+              <option value="Fashion & Style">Fashion & Style</option>
+              <option value="Food">Food</option>
+              <option value="Front Page">Front Page</option>
+              <option value="Giving">Giving</option>
+              <option value="Global Home">Global Home</option>
+              <option value="Great Homes & Destinations">Great Homes & Destinations</option>
+              <option value="Great Homes and Destinations">Great Homes and Destinations</option>
+              <option value="Health">Health</option>
+              <option value="Home & Garden">Home & Garden</option>
+              <option value="Home and Garden">Home and Garden</option>
+              <option value="International Home">International Home</option>
+              <option value="Job Market">Job Market</option>
+              <option value="Learning">Learning</option>
+              <option value="Magazine">Magazine</option>
+              <option value="Movies">Movies</option>
+              <option value="Multimedia">Multimedia</option>
+              <option value="Multimedia/Photos">Multimedia/Photos</option>
+              <option value="N.Y. / Region">N.Y. / Region</option>
+              <option value="N.Y./Region">N.Y./Region</option>
+              <option value="NYRegion">NYRegion</option>
+              <option value="NYT Now">NYT Now</option>
+              <option value="National">National</option>
+              <option value="New York">New York</option>
+              <option value="New York and Region">New York and Region</option>
+              <option value="Obituaries">Obituaries</option>
+              <option value="Olympics">Olympics</option>
+              <option value="Open">Open</option>
+              <option value="Opinion">Opinion</option>
+              <option value="Paid Death Notices">Paid Death Notices</option>
+              <option value="Public Editor">Public Editor</option>
+              <option value="Real Estate">Real Estate</option>
+              <option value="Science">Science</option>
+              <option value="Sports">Sports</option>
+              <option value="Style">Style</option>
+              <option value="Sunday Magazine">Sunday Magazine</option>
+              <option value="Sunday Review">Sunday Review</option>
+              <option value="T Magazine">T Magazine</option>
+              <option value="T:Style">T:Style</option>
+              <option value="Technology">Technology</option>
+              <option value="The Public Editor">The Public Editor</option>
+              <option value="The Upshot">The Upshot</option>
+              <option value="Theater">Theater</option>
+              <option value="Times Topics">Times Topics</option>
+              <option value="TimesMachine">TimesMachine</option>
+              <option value="Today's Headlines">Today's Headlines</option>
+              <option value="Topics">Topics</option>
+              <option value="Travel">Travel</option>
+              <option value="U.S.">U.S.</option>
+              <option value="Universal">Universal</option>
+              <option value="UrbanEye">UrbanEye</option>
+              <option value="Washington">Washington</option>
+              <option value="Week in Review">Week in Review</option>
+              <option value="World">World</option>
+              <option value="Your Money">Your Money</option>
+            </select>
+          </li>
+          <li><label class="grey label" for="search-input">Search <span class="api-ref">[q-string]</span></label></li>
+          <li><input type="text" id="query"></li>
+          <li><label class="grey label" for="highlight-switch">Highlight search text?</label></li>
+          <li>
+            <div class="switch">
+              <input class="switch-input" id="highlight" type="checkbox" name="highlight-switchs">
+              <label class="switch-paddle" for="highlight">
+                <span class="show-for-sr">Highlight search text?</span>
+              </label>
+            </div>
+          </li>
+          <li><label class="grey label" for="filter-input">Filter <span class="api-ref">[fq-string]</span></label></li>
+          <li><input type="text" id="filter"></li>
+          <li><label class="grey label" for="start-date-input">Start Date <span class="api-ref">[begin_date-string]</span></label></li>
+          <li><input type="text" class="span2 startDate" data-date-format="mm/dd/yyyy" id="dp1"></li>
+          <li><label class="grey label" for="end-date-input">End Date <span class="api-ref">[end_date-string]</span></label></li>
+          <li><input type="text" class="span2 endDate" data-date-format="mm/dd/yyyy" id="dp2"></li>
+          <li><label class="grey label" for="page-input">Page <span class="api-ref">[page-integer]</span></label></li>
+          <li><input type="number" min="0" id="page"></li>
+          <li><button class="red button" type="submit" id="findArticlesButton">Find My Articles</button></li>
+        </ul>
+        </div>
+      </aside>
+      <!-- /Params Sidebar -->
+      <!-- Error Message Callout -->
+      <div class="medium-offset-2 medium-6 columns">
+        <div class="callout large red error-notification" id="notificationCallout">
+          <div class="text-center" id="notification">
+          </div>
+        </div>
+      </div>
+      <!-- /Error Message Callout -->
+      <!-- Article Feed Content -->
+      <div id="article-feed" class="medium-offset-2 medium-6 columns">        
+      </div>
+      <!-- /Article Feed Content -->
+<!--       <div class="medium-5 columns read-more" id="moreArticles">
+        <button type="button" class="red button" id="moreArticlesButton">See More Articles</button>  
+      </div> -->
+    </main>
+    <!-- /Main Content -->
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+      <div class="row">
+        <div class="small-12 columns">
+          <p class="slogan">New York Times feedr</p>
+          <p class="links">
+            <a href="http://localhost:3000" title="feedr">feedr</a>
+            <a href="http://developer.nytimes.com/article_search_v2.json" target="_blank" title="API Docs">API Docs</a>
+            <a href="https://github.com/ryanpflem/feedr-foundation" target="_blank" title="Fork Me">Fork Me</a>
+          </p>
+        </div>
+      </div>
+    </footer>
+    <!-- /Footer -->
+    <!-- Scripts -->
+    <!-- Handlebars -->
+    <script id="article-template" type="text/x-handlebars-template">
+      <article class="blog-post">
+        <header>
+          <h3 class="article_popup_open" popupurl="{{articleUrl}}">{{articleHeadline}}<time pubdate={{articleDate}}>{{articleDate}}</time></h3>
+        </header>
+        {{#if articleImages.url}}
+        <img class="thumbnail article_popup_open" popupurl="{{articleUrl}}" src="{{articleImages.url}}">
+        {{/if}}
+        <div class="entry content">
+          <p class="snippet">{{{articleSnippet}}}</p>
+        </div>
+        <footer class="callout grey">
+          <ul class="menu simple">
+            <li>{{articleAuthor}}</li>
+            <!-- <li>Category: {{articleCategory}}</li> -->
+            <li>Section: <span class="section">{{articleSection}}</span></li>
+            <li><a href="{{articleUrl}}" target="_blank">Read on the NYT</a></li>
+          </ul>
+          <div>
+            <span class="keyword"></span>
+          </div>
+        </footer>
+      </article>
+    </script>
+    <!-- /Handlebars -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/what-input/what-input.js"></script>
+    <script src="bower_components/foundation-sites/dist/foundation.js"></script>
+    <script src="node_modules/foundation-datepicker/js/foundation-datepicker.js"></script>
+    <script src="js/handlebars-v4.0.5.js"></script>
+    <script src="https://cdn.rawgit.com/vast-engineering/jquery-popup-overlay/1.7.13/jquery.popupoverlay.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+      // datepicker.js for Foundation - http://foundation-datepicker.peterbeno.com/example.html
+      $(function(){
+        var nowTemp = new Date();
+        var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+        $('#dp1').fdatepicker({          
+          format: 'yyyy-mm-dd',
+          disableDblClickSelection: true,
+          closeButton: true
+        });
+        $('#dp2').fdatepicker({          
+          format: 'yyyy-mm-dd',
+          disableDblClickSelection: true,
+          closeButton: true
+        });
+      });
+    </script>
+    <!-- /Scripts -->
+  </body>
+</html>
