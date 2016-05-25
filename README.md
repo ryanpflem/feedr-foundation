@@ -1,6 +1,6 @@
 # feedr - Foundation for Sites Template
 
-This is the NY Times feedr app developed with [Foundation for Sites 6](http://foundation.zurb.com/sites).
+This is a NY Times feedr app developed with [Foundation for Sites 6](http://foundation.zurb.com/sites).
 
 ## Dependencies
 
