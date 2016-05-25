@@ -26,6 +26,14 @@ npm install foundation-cli --global
 npm install --save-dev gulp-webserver
 ```
 
+[jquery-popup-overlay](https://github.com/vast-engineering/jquery-popup-overlay)
+
+**Note - Github pages blocks iframes to prevent clickjacking by sending the "X-Frame-Options: deny" header for every page.**
+This will block the pop-up overlay as seen on the hosted site.  If you use this on your local machine or a hosted server this will not be an issue.
+
+[Foundation-datepicker.js](http://foundation-datepicker.peterbeno.com/example.html)
+
+
 
 ### Installation Using the Foundation-CLI
 
@@ -51,9 +59,9 @@ Then open the folder in your command line, and install the ```gulp-webserver``` 
 npm install --save-dev gulp-webserver
 ```
 
-To copy the repo, you can run a ```git pull```.
+To copy the repo, you can run a ```git clone``` in your new project directory.
 
-Alternatively, you can also manually copy in the following files from the repo and place them in their appropriate folder.
+Alternatively, you can also manually copy in the following files from the repo and place them in their appropriate folder after installing the foundation template.
 
 Make sure you copy these into the project:
 
